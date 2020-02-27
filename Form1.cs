@@ -15,6 +15,7 @@ namespace Pile_Counting
         public Form1()
         {
             InitializeComponent();
+            this.Text = "樁基礎設計數量計算 " + Application.ProductVersion;
         }
 
         string filePath;
@@ -26,6 +27,7 @@ namespace Pile_Counting
             if(openFile.FileName == "")
             {
                 filePath = null;
+                lbl_FilePath.Text = "選擇檔案路徑";
             }
             else
             {
@@ -45,7 +47,12 @@ namespace Pile_Counting
             PileCounting pileCounting = new PileCounting(filePath);
             string done = pileCounting.Process();
 
-            MessageBox.Show(done);
+            MessageBox.Show(done,"Pile Foundation");
+        }
+
+        private void btn_Close_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

@@ -17,9 +17,13 @@ namespace Pile_Counting
 
         public string Dia;
         public int pileNo;
+        public int pileXno;
+        public int pileYno;
         public string pileLength;
 
-        public string 
+        public double pierX;
+        public double pierY;
+                
     }
 
     class outPileCap
@@ -27,19 +31,24 @@ namespace Pile_Counting
         public string size;
         public List<string> ID;
         public int no;
-        public string strAirCon;
-        public string strMold;
+        public double Volume;
+        public string strVolume;
+        public double PCPlateV;
+        public string strPCPlateV;
+        public double moldArea;
+        public string strMoldArea;
     }
 
     class outDiaPile
     {
+        public string name;
         public string Dia;
         public List<string> ID;
         public int no;
-        public int pileNo;
-        public string strPileNo;
         public string strPileL;
         public double pileL;
+        public string strPileNo;
+        public int pileNo;                
         public string strDrillL;
         public double drillL;
         public string strVolume;
@@ -54,5 +63,13 @@ namespace Pile_Counting
         public List<string> ID;
         public string strMarchL;
         public double marchL;
+    }
+
+    class ExcaVolume
+    {
+        public string name;
+        public List<string> ID;
+        public string strVolume;
+        public double volume;
     }
 }
