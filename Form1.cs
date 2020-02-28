@@ -40,7 +40,7 @@ namespace Pile_Counting
         private void btn_PileCounting_Click(object sender, EventArgs e)
         {
 
-            filePath = @"E:\2019_DQ126\!Count\20200224_P16.xlsx"; //暫時用，最後請刪除
+            //filePath = @"E:\2019_DQ126\!Count\20200224_P16.xlsx"; //暫時用，最後請刪除
 
             if (filePath == null) { MessageBox.Show("請選擇檔案路徑", "Error"); return; }
             

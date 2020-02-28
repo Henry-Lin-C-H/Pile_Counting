@@ -32,8 +32,10 @@ namespace Pile_Counting
             FileStream file;
             try { file = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite); }
             catch { string error = "讀取失敗，請確認檔案是否為開啟狀態"; return error; }
+
+            try { wb = new XSSFWorkbook(file); }
+            catch { string error = "讀取失敗，請確認檔案是否為xlsx檔"; return error; }
             
-            wb = new XSSFWorkbook(file);
             ws = wb.GetSheet("基礎型式總表");
             writeWS = wb.GetSheet("數量計算");
 
@@ -82,7 +84,7 @@ namespace Pile_Counting
                     diaDistinct.Add(Dia);
                 }
             }
-            catch { string error = "資料有誤，請確認"; return error; }
+            catch { string error = "讀取失敗，請確認檔案資料是否有誤"; return error; }
 
                         
             capDistinct = capDistinct.Distinct().ToList(); //依據樁帽尺寸分類
@@ -520,8 +522,8 @@ namespace Pile_Counting
             backFillV -= (totalcapConV + totalPCConV);
             for(int i = 0; i < ExcaVolume.Count; i++)
             {
-                backFillV += ExcaVolume[i].volume;
-                strBackFillV += $"{ExcaVolume[i].volume}";
+                backFillV += Math.Round(ExcaVolume[i].volume,0);
+                strBackFillV += $"{Math.Round(ExcaVolume[i].volume,0)}";
                 if (i != ExcaVolume.Count - 1) strBackFillV += "+";
             }
             strBackFillV += $"-{totalcapConV}-{totalPCConV}";
@@ -536,7 +538,7 @@ namespace Pile_Counting
                 strBackFillV += $"-{L}*{W}*{Df_b}";
             }
 
-            SetRowData(writeWS, row, $"12,構造物回填，第I類材料,m3,{backFillV},{strBackFillV}," +
+            SetRowData(writeWS, row, $"12,構造物回填，第I類材料,m3,{Math.Round(backFillV,0)},{strBackFillV}," +
                 $"構造物開挖-樁帽280混凝土-樁帽打底140混凝土-回填深度之柱體積");
             row++;
 
@@ -544,12 +546,12 @@ namespace Pile_Counting
             string strSurplusV = "";
             for(int i = 0; i < ExcaVolume.Count; i ++)
             {
-                surplusV += ExcaVolume[i].volume;
-                strSurplusV += $"{ExcaVolume[i].volume}";
+                surplusV += Math.Round(ExcaVolume[i].volume,0);
+                strSurplusV += $"{Math.Round(ExcaVolume[i].volume,0)}";
                 if (i != ExcaVolume.Count - 1) strSurplusV += "+";
             }
-            surplusV -= backFillV;
-            strSurplusV += $"-{backFillV}";
+            surplusV -= Math.Round(backFillV,0);
+            strSurplusV += $"-{Math.Round(backFillV,0)}";
 
             SetRowData(writeWS, row, $"13,餘方,m3,{surplusV},{strSurplusV},挖方-填方");
             row++;
