@@ -51,10 +51,10 @@
             // 
             this.lbl_FilePath.AutoSize = true;
             this.lbl_FilePath.BackColor = System.Drawing.Color.Transparent;
-            this.lbl_FilePath.Font = new System.Drawing.Font("微軟正黑體", 15F);
+            this.lbl_FilePath.Font = new System.Drawing.Font("微軟正黑體", 10F);
             this.lbl_FilePath.Location = new System.Drawing.Point(12, 144);
             this.lbl_FilePath.Name = "lbl_FilePath";
-            this.lbl_FilePath.Size = new System.Drawing.Size(132, 25);
+            this.lbl_FilePath.Size = new System.Drawing.Size(92, 18);
             this.lbl_FilePath.TabIndex = 1;
             this.lbl_FilePath.Text = "選擇檔案路徑";
             // 

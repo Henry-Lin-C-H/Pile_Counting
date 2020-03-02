@@ -42,9 +42,16 @@ namespace Pile_Counting
             List<string> capDistinct = new List<string>();
             List<string> diaDistinct = new List<string>();
 
+            
+            int lastRow = ws.LastRowNum + 1;
+            for (int i = 1; i < ws.LastRowNum + 1; i++)
+            {
+                if (ws.GetRow(i).GetCell(2).ToString() == "") { lastRow = i; break; }
+            }                        
+
             try
             {
-                for (int i = 1; i < ws.LastRowNum + 1; i++) //將資料讀取寫入Data
+                for (int i = 1; i < lastRow; i++) //將資料讀取寫入Data
                 {
                     string pileStation = ws.GetRow(0).GetCell(2).ToString();
                     string ID = pileStation + int.Parse(ws.GetRow(i).GetCell(2).ToString()).ToString("D2"); //基礎編號                                        
@@ -438,16 +445,18 @@ namespace Pile_Counting
 
             }
 
-            capCon[1] = $"1,fc' = 280kg/cm2 TYPE II 混凝土,m3,{totalcapConV}";
-            PCCon[0] = $"2,f'c=140kg/cm2 TYPE I 混凝土,m3,{totalPCConV}";
-            mold[0] = $"4,免拆模板,m2,{totalmoldA}";
+            capCon[1] = $"1,fc' = 280kg/cm2 TYPE II 混凝土,m3,{Math.Round(totalcapConV,0)}";
+            PCCon[0] = $"2,f'c=140kg/cm2 TYPE I 混凝土,m3,{Math.Round(totalPCConV,0)}";
+            mold[0] = $"4,免拆模板,m2,{Math.Round(totalmoldA,0)}";
 
             int row = 6;
             for (int i = 0; i < capCon.Count; i++) { SetRowData(writeWS, row, capCon[i]); row++; }
             for (int i = 0; i < PCCon.Count; i++) { SetRowData(writeWS, row, PCCon[i]); row++; }
+            SetRowData(writeWS, row, ""); row++;
             SetRowData(writeWS, row, "3,鋼筋SD420W,T"); row++;
+            SetRowData(writeWS, row, ""); row++;
             for (int i = 0; i < mold.Count; i++) { SetRowData(writeWS, row, mold[i]); row++; }
-
+                        
             for (int i = 0; i < outDiaPile.Count; i++)
             {
                 string dia = outDiaPile[i].Dia;
@@ -468,18 +477,20 @@ namespace Pile_Counting
                 string ID = "";
                 for (int j = 0; j < outDiaPile[i].ID.Count; j++) { ID += $"{outDiaPile[i].ID[j]}、"; }
                 List<string> pileSheet = new List<string>();
-                pileSheet.Add($"5,{name},m,{L},{strL},Σ各墩樁數*各墩樁長,{ID}");
+                pileSheet.Add($"5.{i+1},{name},m,{L},{strL},Σ各墩樁數*各墩樁長,{ID}");
                 pileSheet.Add($"(1),基樁支數,支,{no},{strNo},Σ各墩墩數");
                 pileSheet.Add($"(2),鑽掘長度,m,{drillL},{strDrillL},含空打段，土層、岩層各約佔50%");
                 pileSheet.Add($"(3),f'c=280kg/cm2 TYPE II 混凝土,m3,{V},{strV}");
                 pileSheet.Add($"(4),鋼筋SD420W,T,,,樁徑{dia}m全套管樁(樁基礎_---鋼筋，SD420W(含搭接，不含耗損)");
                 pileSheet.Add($"(5),基樁樁頭敲除,m3,{head},{strHead},每支樁敲除體積(1m)*Σ(各墩樁數*墩數)");
                 pileSheet.Add($"(6),完整性試驗PVC館,m,{PVC},,,鑽掘長度*4+基樁支數*4*0.2");
+                SetRowData(writeWS, row, ""); row++;
                 for (int j = 0; j < pileSheet.Count; j++) { SetRowData(writeWS, row, pileSheet[j]); row++; }
             }
 
 
             //List<string> excelSheetPile = new List<string>();
+            SetRowData(writeWS, row, ""); row++;
             SetRowData(writeWS, row, $"6,鋼板樁");
             row++;
             for (int i = 0; i < sheetPile.Count; i++)
@@ -490,20 +501,22 @@ namespace Pile_Counting
                 double marchL = sheetPile[i].marchL;
                 string strMarchL = sheetPile[i].strMarchL;
 
-                SetRowData(writeWS,row,$"({i + 1}),{name},m,{marchL},{strMarchL},行進米,{ID}");
+                SetRowData(writeWS,row,$"({i + 1}),{name},m,{Math.Round(marchL,0)},{strMarchL},行進米,{ID}");
                 row++;
                 //excelSheetPile.Add($"({i + 1}),{name},m,{marchL},{strMarchL},行進米,{ID}");
             }            
 
 
             List<string> strut = new List<string>();
-            strut.Add($"9,斜撐、直撐,T,,,H350型鋼－斜撐長度*單層支數*階數*墩數+直撐");
+            SetRowData(writeWS, row, ""); row++;
+            strut.Add($"7,斜撐、直撐,T,,,H350型鋼－斜撐長度*單層支數*階數*墩數+直撐");
             strut.Add($",橫擋,T,,,H350型鋼－樁帽周長*階數*墩數");
-            strut.Add($"10,中間柱,T");
+            strut.Add($"8,中間柱,T");
             for(int i = 0; i < strut.Count; i++) { SetRowData(writeWS, row, strut[i]); row++; }
 
             List<string> excelExcaV = new List<string>();
-            SetRowData(writeWS, row, $"11,構造物開挖");
+            SetRowData(writeWS, row, ""); row++;
+            SetRowData(writeWS, row, $"9,構造物開挖");
             row++;
             for(int i = 0; i < ExcaVolume.Count; i++)
             {
@@ -538,7 +551,7 @@ namespace Pile_Counting
                 strBackFillV += $"-{L}*{W}*{Df_b}";
             }
 
-            SetRowData(writeWS, row, $"12,構造物回填，第I類材料,m3,{Math.Round(backFillV,0)},{strBackFillV}," +
+            SetRowData(writeWS, row, $"10,構造物回填，第I類材料,m3,{Math.Round(backFillV,0)},{strBackFillV}," +
                 $"構造物開挖-樁帽280混凝土-樁帽打底140混凝土-回填深度之柱體積");
             row++;
 
@@ -553,7 +566,7 @@ namespace Pile_Counting
             surplusV -= Math.Round(backFillV,0);
             strSurplusV += $"-{Math.Round(backFillV,0)}";
 
-            SetRowData(writeWS, row, $"13,餘方,m3,{surplusV},{strSurplusV},挖方-填方");
+            SetRowData(writeWS, row, $"11,餘方,m3,{surplusV},{strSurplusV},挖方-填方");
             row++;
 
         }
