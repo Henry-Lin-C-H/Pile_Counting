@@ -43,8 +43,8 @@ namespace Pile_Counting
             List<string> diaDistinct = new List<string>();
 
             
-            int lastRow = ws.LastRowNum + 1;
-            for (int i = 1; i < ws.LastRowNum + 1; i++)
+            int lastRow = ws.LastRowNum;
+            for (int i = 1; i < ws.LastRowNum; i++)
             {
                 if (ws.GetRow(i).GetCell(2).ToString() == "") { lastRow = i; break; }
             }                        
@@ -53,8 +53,9 @@ namespace Pile_Counting
             {
                 for (int i = 1; i < lastRow; i++) //將資料讀取寫入Data
                 {
-                    string pileStation = ws.GetRow(0).GetCell(2).ToString();
-                    string ID = pileStation + int.Parse(ws.GetRow(i).GetCell(2).ToString()).ToString("D2"); //基礎編號                                        
+                    //string pileStation = ws.GetRow(0).GetCell(2).ToString();
+                    //string ID = pileStation + int.Parse(ws.GetRow(i).GetCell(2).ToString()).ToString("D2"); //基礎編號                                        
+                    string ID = ws.GetRow(i).GetCell(2).ToString();
                     double L = double.Parse(ws.GetRow(i).GetCell(12).ToString()); //樁帽軸長
                     double w = double.Parse(ws.GetRow(i).GetCell(11).ToString()); //樁帽橫寬
                     double Df = double.Parse(ws.GetRow(i).GetCell(5).ToString()); //Df
@@ -131,7 +132,9 @@ namespace Pile_Counting
         {            
             foreach (var item in capDistinct)
             {
-                List<PileData> each = PileData.FindAll(x => x.capCon.Contains(item));
+                List<PileData> each = PileData.FindAll(x => x.capCon.Equals(item));
+
+                //List<PileData> each = PileData.FindAll(x => x.capCon.Contains(item));
                 List<string> eachID = new List<string>();
                 for (int i = 0; i < each.Count; i++)
                 {
