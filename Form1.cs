@@ -15,12 +15,15 @@ namespace Pile_Counting
         public Form1()
         {
             InitializeComponent();
+
+            
             this.Text = "樁基礎設計數量計算 " + Application.ProductVersion;
+            lbl_UserName.Text = $"{appGlobal.UserName}, {appGlobal.UserID}";
         }
 
         string filePath;
         private void btn_FileChoosing_Click(object sender, EventArgs e)
-        {            
+        {
             OpenFileDialog openFile = new OpenFileDialog();
             openFile.ShowDialog();
                             
@@ -40,7 +43,7 @@ namespace Pile_Counting
         private void btn_PileCounting_Click(object sender, EventArgs e)
         {
 
-            //filePath = @"E:\2019_DQ126\!Count\20200224_P16.xlsx"; //暫時用，最後請刪除
+            //filePath = @"E:\2019_DQ126\!Count\20200224_P16.xlsx"; //暫時用，最後請刪除                       
 
             if (filePath == null) { MessageBox.Show("請選擇檔案路徑", "Error"); return; }
             

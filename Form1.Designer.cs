@@ -34,6 +34,8 @@
             this.btn_PileCounting = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.btn_Close = new System.Windows.Forms.Button();
+            this.lbl_UserName = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btn_FileChoosing
@@ -90,17 +92,40 @@
             this.btn_Close.UseVisualStyleBackColor = true;
             this.btn_Close.Click += new System.EventHandler(this.btn_Close_Click);
             // 
+            // lbl_UserName
+            // 
+            this.lbl_UserName.AutoSize = true;
+            this.lbl_UserName.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lbl_UserName.Location = new System.Drawing.Point(70, 68);
+            this.lbl_UserName.Name = "lbl_UserName";
+            this.lbl_UserName.Size = new System.Drawing.Size(90, 21);
+            this.lbl_UserName.TabIndex = 4;
+            this.lbl_UserName.Text = "使用者姓名";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.label2.Location = new System.Drawing.Point(18, 68);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(58, 21);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "姓名：";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(628, 352);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.lbl_UserName);
             this.Controls.Add(this.btn_Close);
             this.Controls.Add(this.btn_PileCounting);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lbl_FilePath);
             this.Controls.Add(this.btn_FileChoosing);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "Form1";
@@ -116,6 +141,8 @@
         private System.Windows.Forms.Button btn_PileCounting;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btn_Close;
+        private System.Windows.Forms.Label lbl_UserName;
+        private System.Windows.Forms.Label label2;
     }
 }
 
