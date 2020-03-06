@@ -35,22 +35,27 @@ namespace Pile_Counting
 
             try { wb = new XSSFWorkbook(file); }
             catch { string error = "讀取失敗，請確認檔案是否為xlsx檔"; return error; }
-            
+
             ws = wb.GetSheet("基礎型式總表");
             writeWS = wb.GetSheet("數量計算");
+
+            if(ws == null || writeWS == null) { string error = "讀取失敗，請確認工作表名稱是否正確"; return error; }
+                                    
 
             List<string> capDistinct = new List<string>();
             List<string> diaDistinct = new List<string>();
 
             
-            int lastRow = ws.LastRowNum;
-            for (int i = 1; i < ws.LastRowNum; i++)
-            {
-                if (ws.GetRow(i).GetCell(2).ToString() == "") { lastRow = i; break; }
-            }                        
+                                   
 
             try
             {
+                int lastRow = ws.LastRowNum;
+                for (int i = 1; i < ws.LastRowNum; i++)
+                {
+                    if (ws.GetRow(i).GetCell(2).ToString() == "") { lastRow = i; break; }
+                }
+
                 for (int i = 1; i < lastRow; i++) //將資料讀取寫入Data
                 {
                     //string pileStation = ws.GetRow(0).GetCell(2).ToString();
