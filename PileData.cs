@@ -72,4 +72,19 @@ namespace Pile_Counting
         public string strVolume;
         public double volume;
     }
+
+    class strutData
+    {
+        public string ID;
+
+        public string strBracing2m;
+        public string strStrut2m;
+        public double total2m;
+
+        public string strBracing2p5m;
+        public string strStrut2p5m;
+        public double total2p5m;
+
+        public int stage;
+    }
 }

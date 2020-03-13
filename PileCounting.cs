@@ -23,6 +23,8 @@ namespace Pile_Counting
         List<outDiaPile> outDiaPile = new List<outDiaPile>();
         List<sheetPile> sheetPile = new List<sheetPile>();
         List<ExcaVolume> ExcaVolume = new List<ExcaVolume>();
+
+        List<strutData> strutData = new List<strutData>();
         public string Process()
         {            
             XSSFWorkbook wb;
@@ -50,11 +52,13 @@ namespace Pile_Counting
 
             try
             {
-                int lastRow = ws.LastRowNum;
+                int lastRow = ws.LastRowNum; //P16明明有29筆，但只抓到28筆 (20200312)
                 for (int i = 1; i < ws.LastRowNum; i++)
                 {
                     if (ws.GetRow(i).GetCell(2).ToString() == "") { lastRow = i; break; }
                 }
+
+                
 
                 for (int i = 1; i < lastRow; i++) //將資料讀取寫入Data
                 {
@@ -117,6 +121,8 @@ namespace Pile_Counting
             SheetPileCount(ref sheetPile); //鋼板樁行進米計算
                         
             ExcaVolumeCount(ref ExcaVolume); //構造物開挖體積計算
+
+            strutCal();
 
             WriteToSheet(writeWS); //寫入數量計算書
             FileStream fileSave = new FileStream(filePath, FileMode.Create);
@@ -630,5 +636,101 @@ namespace Pile_Counting
             }
         }
         #endregion
+
+
+        void strutCal()
+        {
+            for(int i = 0; i < PileData.Count; i++)
+            {
+                string ID = PileData[i].ID;
+                double L = PileData[i].Length;
+                double W = PileData[i].Width;
+                double Df = PileData[i].Df;
+
+                int stage = 1;
+                if (Df > 5) stage = 2;
+
+                List<double> spacing = new List<double> { 2, 2.5 };
+
+                string strBracing2m = "";
+                string strStrut2m = "";
+                double total2m = 0;
+
+                string strBracing2p5m = "";
+                string strStrut2p5m = "";
+                double total2p5m = 0;
+
+                //長、寬兩側扣掉6m的距離(6m為設置直撐的最小距離
+                double Lside = (L - 6) / 2;
+                double Wside = (W - 6) / 2;
+
+                for(int k = 0; k < spacing.Count; k++)
+                {
+                    //分別計算以2m與2.5m為間距的斜撐在長及寬側所需的支數
+                    int L2mNo = (int)(Lside / spacing[k]) + 1;
+                    int W2mNo = (int)(Wside / spacing[k]) + 1;
+
+                    //先取支數較多的計算可行與否
+                    bool check = true;
+                    int bra2mNo = Math.Max(L2mNo, W2mNo);
+                    double ch2m = L - bra2mNo * 2 * 2;
+                    if ((L - bra2mNo * spacing[k] * 2) < 0) check = false;
+                    if ((W - bra2mNo * spacing[k] * 2) < 0) check = false;
+
+                    string strBracing = "";
+                    string strStrut = "";
+                    double total = 0;
+
+                    if (!check) bra2mNo = Math.Min(L2mNo, W2mNo);
+
+                    for (int j = 1; j < bra2mNo + 1; j++)
+                    {
+                        if (j != 1) strBracing += "+";
+                        strBracing += $"{j * spacing[k]}*2^(1/2)*4";
+                        total += (j * 2) * Math.Sqrt(2) * 4;
+                    }
+
+                    if (!check)
+                    {
+                        int strut = (int)((Math.Max(L, W) - 2 * bra2mNo * 2) / 6);
+                        strStrut += $"{strut}*{Math.Min(L, W)}";
+                        total += strut * Math.Min(L, W);
+                    }
+
+                    total *= stage;
+
+                    if(k == 0)
+                    {
+                        strBracing2m = strBracing;
+                        strStrut2m = strStrut;
+                        total2m = total;
+                    }
+                    else if (k == 1)
+                    {
+                        strBracing2p5m = strBracing;
+                        strStrut2p5m = strStrut;
+                        total2p5m = total;
+                    }
+
+                    
+                }
+
+                strutData.Add(new strutData()
+                {
+                    ID = ID,
+                    strBracing2m = strBracing2m,
+                    strStrut2m = strStrut2m,
+                    total2m = total2m,
+
+                    strBracing2p5m = strBracing2p5m,
+                    strStrut2p5m = strStrut2p5m,
+                    total2p5m = total2p5m,
+                    stage = stage
+                });
+                                
+            }
+
+            int jjj = 1;
+        }
     }
 }
