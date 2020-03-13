@@ -17,19 +17,20 @@ namespace Pile_Counting
             this.filePath = filePath;
         }
 
+        
         List<PileData> PileData = new List<PileData>();
 
         List<outPileCap> outPileCap = new List<outPileCap>();
         List<outDiaPile> outDiaPile = new List<outDiaPile>();
         List<sheetPile> sheetPile = new List<sheetPile>();
         List<ExcaVolume> ExcaVolume = new List<ExcaVolume>();
-
-        List<strutData> strutData = new List<strutData>();
-        public string Process()
+                
+        public string Process(string function)
         {            
             XSSFWorkbook wb;
             ISheet ws;
             ISheet writeWS;
+            ISheet strutWS;
 
             FileStream file;
             try { file = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite); }
@@ -40,26 +41,30 @@ namespace Pile_Counting
 
             ws = wb.GetSheet("基礎型式總表");
             writeWS = wb.GetSheet("數量計算");
+            strutWS = wb.GetSheet("支撐計算");
 
-            if(ws == null || writeWS == null) { string error = "讀取失敗，請確認工作表名稱是否正確"; return error; }
+            if(ws == null || writeWS == null || strutWS == null)
+            {
+                string error = "讀取失敗，請確認工作表名稱或選擇檔案是否正確";
+                return error;
+            }
                                     
 
             List<string> capDistinct = new List<string>();
             List<string> diaDistinct = new List<string>();
 
-            
-                                   
-
+            #region 讀取資料
+            int lastRow;
             try
             {
-                int lastRow = ws.LastRowNum; //P16明明有29筆，但只抓到28筆 (20200312)
+                lastRow = ws.LastRowNum;
                 for (int i = 1; i < ws.LastRowNum; i++)
                 {
-                    if (ws.GetRow(i).GetCell(2).ToString() == "") { lastRow = i; break; }
+                    if (ws.GetRow(i + 1).GetCell(2).ToString() == "") { lastRow = i; break; }
                 }
+                lastRow++;
 
-                
-
+                appGlobal.pileData.Clear();
                 for (int i = 1; i < lastRow; i++) //將資料讀取寫入Data
                 {
                     //string pileStation = ws.GetRow(0).GetCell(2).ToString();
@@ -81,7 +86,8 @@ namespace Pile_Counting
                     double PierX = double.Parse(ws.GetRow(i).GetCell(0).ToString());
                     double PierY = double.Parse(ws.GetRow(i).GetCell(1).ToString());
 
-                    PileData.Add(new PileData()
+                    //PileData.Add(new PileData()                    
+                    appGlobal.pileData.Add(new PileData()
                     {
                         ID = ID,
                         Length = L,
@@ -102,35 +108,64 @@ namespace Pile_Counting
                 }
             }
             catch { string error = "讀取失敗，請確認檔案資料是否有誤"; return error; }
+            PileData = appGlobal.pileData;
+            #endregion
 
-                        
-            capDistinct = capDistinct.Distinct().ToList(); //依據樁帽尺寸分類
-            CapCount(ref outPileCap, capDistinct);
+            string done = "";
+            switch(function.ToUpper())
+            {
+                case ("COUNTING"):
+                    capDistinct = capDistinct.Distinct().ToList(); //依據樁帽尺寸分類
+                    CapCount(ref outPileCap, capDistinct);
 
-            //List<PileData> find = PileData.FindAll(x => x.capCon.Contains("6.25*10.41*2.5"));
-                        
-            diaDistinct = diaDistinct.Distinct().ToList(); //依據基樁直徑分類
-            DiaCount(ref outDiaPile, diaDistinct);
-            
-            List<bool> sheetPileCheck = new List<bool>(); //確認鋼板樁使用尺寸(6, 9, 16m) 依據深度(<=3, <=5.5, <=9), >9m須依據土層設計，因此另外標示由使用者自行設計
-            sheetPileCheck.Add(PileData.Exists(x => x.Df <= 3));
-            sheetPileCheck.Add(PileData.Exists(x => x.Df > 3 && x.Df <= 5.5));
-            sheetPileCheck.Add(PileData.Exists(x => x.Df > 5.5 && x.Df <= 9));
-            sheetPileCheck.Add(PileData.Exists(x => x.Df > 9));
-                        
-            SheetPileCount(ref sheetPile); //鋼板樁行進米計算
-                        
-            ExcaVolumeCount(ref ExcaVolume); //構造物開挖體積計算
+                    //List<PileData> find = PileData.FindAll(x => x.capCon.Contains("6.25*10.41*2.5"));
 
-            strutCal();
+                    diaDistinct = diaDistinct.Distinct().ToList(); //依據基樁直徑分類
+                    DiaCount(ref outDiaPile, diaDistinct);
 
-            WriteToSheet(writeWS); //寫入數量計算書
+                    List<bool> sheetPileCheck = new List<bool>(); //確認鋼板樁使用尺寸(6, 9, 16m) 依據深度(<=3, <=5.5, <=9), >9m須依據土層設計，因此另外標示由使用者自行設計
+                    sheetPileCheck.Add(PileData.Exists(x => x.Df <= 3));
+                    sheetPileCheck.Add(PileData.Exists(x => x.Df > 3 && x.Df <= 5.5));
+                    sheetPileCheck.Add(PileData.Exists(x => x.Df > 5.5 && x.Df <= 9));
+                    sheetPileCheck.Add(PileData.Exists(x => x.Df > 9));
+
+                    SheetPileCount(ref sheetPile); //鋼板樁行進米計算
+
+                    ExcaVolumeCount(ref ExcaVolume); //構造物開挖體積計算
+
+                    WriteToSheet(writeWS); //寫入數量計算書                    
+
+                    done = "數量計算寫入完成";
+                    break;
+
+                case ("STRUT"):
+
+                    strutCal();
+                    
+                    fStrutDesign f = new fStrutDesign();
+                    f.ShowDialog();
+
+                    ExcelStrut(strutWS, lastRow);
+
+                    done = "支撐計算與寫入完成";
+                    break;
+            }
+
+            //FileStream fileSave = new FileStream(filePath, FileMode.Create);
+            //wb.Write(fileSave);
+            //fileSave.Close();
+            FileSave(wb, filePath);
+
+
+
+            return done;
+        }
+
+        void FileSave(IWorkbook wb,string filePath)
+        {
             FileStream fileSave = new FileStream(filePath, FileMode.Create);
             wb.Write(fileSave);
             fileSave.Close();
-
-            string done = "計算完成";
-            return done;
         }
 
         #region 樁帽混凝土體積、樁帽底板PC體積、模板面積計算
@@ -583,8 +618,146 @@ namespace Pile_Counting
             SetRowData(writeWS, row, $"11,餘方,m3,{surplusV},{strSurplusV},挖方-填方");
             row++;
 
-        }
+        }        
+        #endregion
 
+        #region 支撐計算
+        void strutCal()
+        {
+            appGlobal.strutData.Clear();
+            for (int i = 0; i < PileData.Count; i++)
+            {
+                string ID = PileData[i].ID;
+                double L = PileData[i].Length;
+                double W = PileData[i].Width;
+                double Df = PileData[i].Df;
+
+                int stage = 1;
+                if (Df > 5) stage = 2;
+
+                List<double> spacing = new List<double> { 2, 2.5 };
+
+                string strBracing2m = "";
+                string strStrut2m = "";
+                double total2m = 0;
+
+                string strBracing2p5m = "";
+                string strStrut2p5m = "";
+                double total2p5m = 0;
+
+                //長、寬兩側扣掉6m的距離(6m為設置直撐的最小距離
+                double Lside = (L - 6) / 2;
+                double Wside = (W - 6) / 2;
+
+                for(int k = 0; k < spacing.Count; k++)
+                {
+                    //分別計算以2m與2.5m為間距的斜撐在長及寬側所需的支數
+                    int LNo = (int)(Lside / spacing[k]) + 1;
+                    int WNo = (int)(Wside / spacing[k]) + 1;
+
+                    //先取支數較多的計算可行與否
+                    bool check = true;
+                    int braNo = Math.Max(LNo, WNo);
+                    //double ch = L - braNo * spacing[k] * 2;
+                    if ((L - braNo * spacing[k] * 2) < 0) check = false;
+                    if ((W - braNo * spacing[k] * 2) < 0) check = false;
+
+                    string strBracing = "";
+                    string strStrut = "";
+                    double total = 0;
+
+                    if (!check) braNo = Math.Min(LNo, WNo);
+
+                    for (int j = 1; j < braNo + 1; j++)
+                    {
+                        if (j != 1) strBracing += "+";
+                        strBracing += $"{j * spacing[k]}*2^(1/2)*4";
+                        total += j * spacing[k] * Math.Sqrt(2) * 4;
+                    }
+
+                    if (!check)
+                    {
+                        int strut = (int)((Math.Max(L, W) - 2 * braNo * 2) / 6);
+                        strStrut += $"{strut}*{Math.Min(L, W)}";
+                        total += strut * Math.Min(L, W);
+                    }
+
+                    total *= stage;
+
+                    if(k == 0)
+                    {
+                        strBracing2m = strBracing;
+                        strStrut2m = strStrut;
+                        total2m = total;
+                    }
+                    else if (k == 1)
+                    {
+                        strBracing2p5m = strBracing;
+                        strStrut2p5m = strStrut;
+                        total2p5m = total;
+                    }
+
+                    
+                }
+                                
+                appGlobal.strutData.Add(new strutData()
+                {
+                    ID = ID,
+                    strBracing2m = strBracing2m,
+                    strStrut2m = strStrut2m,
+                    total2m = total2m,
+
+                    strBracing2p5m = strBracing2p5m,
+                    strStrut2p5m = strStrut2p5m,
+                    total2p5m = total2p5m,
+                    stage = stage
+                });
+                                
+            }           
+            
+        }
+        #endregion
+
+        #region 支撐寫入Excel
+        void ExcelStrut(ISheet strutWS, int lastRow)
+        {
+            List<strutData> strutData = appGlobal.strutData;
+
+            for(int i = 0; i < strutData.Count; i++)
+            {
+                string strInput = "";
+
+                List<string> setData = new List<string>();
+                setData.Add(strutData[i].strBracing2m);
+                setData.Add(strutData[i].strStrut2m);
+                setData.Add(Math.Round(strutData[i].total2m,2).ToString());
+
+                setData.Add(strutData[i].strBracing2p5m);
+                setData.Add(strutData[i].strStrut2p5m);
+                setData.Add(Math.Round(strutData[i].total2p5m,2).ToString());
+
+                setData.Add(strutData[i].stage.ToString());
+                setData.Add(appGlobal.strutData[i].designStrut);
+
+                //strInput += $"{strutData[i].strBracing2m},{strutData[i].strStrut2m},{strutData[i].total2m}," +
+                //    $"{strutData[i].strBracing2p5m},{strutData[i].strStrut2p5m},{strutData[i].total2p5m}," +
+                //    $"{strutData[i].stage}";
+
+                int k = 0;
+                for(int j = 10; j < 17 + 1; j++)
+                {
+                    //SetValue(strutWS, i + 1, j, "");
+                    SetValue(strutWS, i + 1, j, setData[k]);
+                    k++;
+                }
+                
+                
+            }           
+
+        }
+        #endregion
+
+        #region Excel寫入
         /// <summary>
         /// 資料置入EXCEL CELL
         /// </summary>
@@ -636,101 +809,5 @@ namespace Pile_Counting
             }
         }
         #endregion
-
-
-        void strutCal()
-        {
-            for(int i = 0; i < PileData.Count; i++)
-            {
-                string ID = PileData[i].ID;
-                double L = PileData[i].Length;
-                double W = PileData[i].Width;
-                double Df = PileData[i].Df;
-
-                int stage = 1;
-                if (Df > 5) stage = 2;
-
-                List<double> spacing = new List<double> { 2, 2.5 };
-
-                string strBracing2m = "";
-                string strStrut2m = "";
-                double total2m = 0;
-
-                string strBracing2p5m = "";
-                string strStrut2p5m = "";
-                double total2p5m = 0;
-
-                //長、寬兩側扣掉6m的距離(6m為設置直撐的最小距離
-                double Lside = (L - 6) / 2;
-                double Wside = (W - 6) / 2;
-
-                for(int k = 0; k < spacing.Count; k++)
-                {
-                    //分別計算以2m與2.5m為間距的斜撐在長及寬側所需的支數
-                    int L2mNo = (int)(Lside / spacing[k]) + 1;
-                    int W2mNo = (int)(Wside / spacing[k]) + 1;
-
-                    //先取支數較多的計算可行與否
-                    bool check = true;
-                    int bra2mNo = Math.Max(L2mNo, W2mNo);
-                    double ch2m = L - bra2mNo * 2 * 2;
-                    if ((L - bra2mNo * spacing[k] * 2) < 0) check = false;
-                    if ((W - bra2mNo * spacing[k] * 2) < 0) check = false;
-
-                    string strBracing = "";
-                    string strStrut = "";
-                    double total = 0;
-
-                    if (!check) bra2mNo = Math.Min(L2mNo, W2mNo);
-
-                    for (int j = 1; j < bra2mNo + 1; j++)
-                    {
-                        if (j != 1) strBracing += "+";
-                        strBracing += $"{j * spacing[k]}*2^(1/2)*4";
-                        total += (j * 2) * Math.Sqrt(2) * 4;
-                    }
-
-                    if (!check)
-                    {
-                        int strut = (int)((Math.Max(L, W) - 2 * bra2mNo * 2) / 6);
-                        strStrut += $"{strut}*{Math.Min(L, W)}";
-                        total += strut * Math.Min(L, W);
-                    }
-
-                    total *= stage;
-
-                    if(k == 0)
-                    {
-                        strBracing2m = strBracing;
-                        strStrut2m = strStrut;
-                        total2m = total;
-                    }
-                    else if (k == 1)
-                    {
-                        strBracing2p5m = strBracing;
-                        strStrut2p5m = strStrut;
-                        total2p5m = total;
-                    }
-
-                    
-                }
-
-                strutData.Add(new strutData()
-                {
-                    ID = ID,
-                    strBracing2m = strBracing2m,
-                    strStrut2m = strStrut2m,
-                    total2m = total2m,
-
-                    strBracing2p5m = strBracing2p5m,
-                    strStrut2p5m = strStrut2p5m,
-                    total2p5m = total2p5m,
-                    stage = stage
-                });
-                                
-            }
-
-            int jjj = 1;
-        }
     }
 }

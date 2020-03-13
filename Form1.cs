@@ -45,17 +45,27 @@ namespace Pile_Counting
 
             //filePath = @"E:\2019_DQ126\!Count\20200224_P16.xlsx"; //暫時用，最後請刪除                       
 
-            if (filePath == null) { MessageBox.Show("請選擇檔案路徑", "Error"); return; }
-            
-            PileCounting pileCounting = new PileCounting(filePath);
-            string done = pileCounting.Process();
-
-            MessageBox.Show(done,"Pile Foundation");
+            GeneralProcess("Counting");
         }
 
         private void btn_Close_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void btn_StrutCal_Click(object sender, EventArgs e)
+        {
+            GeneralProcess("Strut");
+        }
+
+        void GeneralProcess(string function)
+        {
+            if (filePath == null) { MessageBox.Show("請選擇檔案路徑", "Error"); return; }
+
+            PileCounting pileCounting = new PileCounting(filePath);
+            string done = pileCounting.Process(function);
+
+            MessageBox.Show(done, "Pile Founction");
         }
     }
 }

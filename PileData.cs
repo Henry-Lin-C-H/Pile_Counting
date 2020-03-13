@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Pile_Counting
 {
-    class PileData
+    public class PileData
     {
         public string ID;
         public double Length;
@@ -73,7 +73,7 @@ namespace Pile_Counting
         public double volume;
     }
 
-    class strutData
+    public class strutData
     {
         public string ID;
 
@@ -86,5 +86,6 @@ namespace Pile_Counting
         public double total2p5m;
 
         public int stage;
+        public string designStrut;
     }
 }

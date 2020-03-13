@@ -13,5 +13,8 @@ namespace Pile_Counting
         public static string UserName = "";
         public static string UserEmail = "";
         public static bool IsMembership = false;
+
+        public static List<PileData> pileData = new List<PileData>();
+        public static List<strutData> strutData = new List<strutData>();
     }
 }
