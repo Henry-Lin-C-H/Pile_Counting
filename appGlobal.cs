@@ -16,5 +16,7 @@ namespace Pile_Counting
 
         public static List<PileData> pileData = new List<PileData>();
         public static List<strutData> strutData = new List<strutData>();
+
+        public static string state = "計算尚未完成";
     }
 }

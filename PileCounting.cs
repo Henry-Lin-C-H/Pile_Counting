@@ -25,8 +25,9 @@ namespace Pile_Counting
         List<sheetPile> sheetPile = new List<sheetPile>();
         List<ExcaVolume> ExcaVolume = new List<ExcaVolume>();
                 
-        public string Process(string function)
-        {            
+        public void Process(string function)
+        {
+            appGlobal.state = "數量計算尚未完成";
             XSSFWorkbook wb;
             ISheet ws;
             ISheet writeWS;
@@ -34,10 +35,10 @@ namespace Pile_Counting
 
             FileStream file;
             try { file = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite); }
-            catch { string error = "讀取失敗，請確認檔案是否為開啟狀態"; return error; }
+            catch { appGlobal.state = "讀取失敗，請確認檔案是否為開啟狀態"; return; }
 
             try { wb = new XSSFWorkbook(file); }
-            catch { string error = "讀取失敗，請確認檔案是否為xlsx檔"; return error; }
+            catch { appGlobal.state = "讀取失敗，請確認檔案是否為xlsx檔"; return; }
 
             ws = wb.GetSheet("基礎型式總表");
             writeWS = wb.GetSheet("數量計算");
@@ -45,8 +46,8 @@ namespace Pile_Counting
 
             if(ws == null || writeWS == null || strutWS == null)
             {
-                string error = "讀取失敗，請確認工作表名稱或選擇檔案是否正確";
-                return error;
+                appGlobal.state = "讀取失敗，請確認工作表名稱或選擇檔案是否正確";
+                return;
             }
                                     
 
@@ -54,6 +55,7 @@ namespace Pile_Counting
             List<string> diaDistinct = new List<string>();
 
             #region 讀取資料
+            //appGlobal.pileData.Clear(); //在form1程式完成後統一清除
             int lastRow;
             try
             {
@@ -63,8 +65,7 @@ namespace Pile_Counting
                     if (ws.GetRow(i + 1).GetCell(2).ToString() == "") { lastRow = i; break; }
                 }
                 lastRow++;
-
-                appGlobal.pileData.Clear();
+                
                 for (int i = 1; i < lastRow; i++) //將資料讀取寫入Data
                 {
                     //string pileStation = ws.GetRow(0).GetCell(2).ToString();
@@ -107,11 +108,11 @@ namespace Pile_Counting
                     diaDistinct.Add(Dia);
                 }
             }
-            catch { string error = "讀取失敗，請確認檔案資料是否有誤"; return error; }
+            catch { appGlobal.state = "讀取失敗，請確認檔案資料是否有誤"; return; }
             PileData = appGlobal.pileData;
             #endregion
 
-            string done = "";
+            //string done = "";
             switch(function.ToUpper())
             {
                 case ("COUNTING"):
@@ -135,7 +136,8 @@ namespace Pile_Counting
 
                     WriteToSheet(writeWS); //寫入數量計算書                    
 
-                    done = "數量計算寫入完成";
+                    appGlobal.state = "數量計算寫入完成";
+                    //done = "數量計算寫入完成";
                     break;
 
                 case ("STRUT"):
@@ -147,7 +149,8 @@ namespace Pile_Counting
 
                     ExcelStrut(strutWS, lastRow);
 
-                    done = "支撐計算與寫入完成";
+                    
+                    //done = "支撐計算與寫入完成";
                     break;
             }
 
@@ -158,7 +161,7 @@ namespace Pile_Counting
 
 
 
-            return done;
+            //return done;
         }
 
         void FileSave(IWorkbook wb,string filePath)
@@ -624,7 +627,7 @@ namespace Pile_Counting
         #region 支撐計算
         void strutCal()
         {
-            appGlobal.strutData.Clear();
+            //appGlobal.strutData.Clear(); //在form1統一在程式完成後清除
             for (int i = 0; i < PileData.Count; i++)
             {
                 string ID = PileData[i].ID;
@@ -725,7 +728,7 @@ namespace Pile_Counting
 
             for(int i = 0; i < strutData.Count; i++)
             {
-                string strInput = "";
+                //string strInput = "";
 
                 List<string> setData = new List<string>();
                 setData.Add(strutData[i].strBracing2m);

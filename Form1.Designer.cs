@@ -37,39 +37,51 @@
             this.lbl_UserName = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.btn_StrutCal = new System.Windows.Forms.Button();
+            this.pnl_choose = new System.Windows.Forms.Panel();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btn_FileChoosing
             // 
-            this.btn_FileChoosing.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.btn_FileChoosing.Location = new System.Drawing.Point(12, 107);
+            this.btn_FileChoosing.BackColor = System.Drawing.Color.Transparent;
+            this.btn_FileChoosing.FlatAppearance.BorderSize = 0;
+            this.btn_FileChoosing.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_FileChoosing.Font = new System.Drawing.Font("微軟正黑體", 10F, System.Drawing.FontStyle.Bold);
+            this.btn_FileChoosing.ForeColor = System.Drawing.Color.Black;
+            this.btn_FileChoosing.Image = ((System.Drawing.Image)(resources.GetObject("btn_FileChoosing.Image")));
+            this.btn_FileChoosing.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btn_FileChoosing.Location = new System.Drawing.Point(12, 117);
             this.btn_FileChoosing.Name = "btn_FileChoosing";
-            this.btn_FileChoosing.Size = new System.Drawing.Size(91, 34);
+            this.btn_FileChoosing.Size = new System.Drawing.Size(140, 34);
             this.btn_FileChoosing.TabIndex = 0;
             this.btn_FileChoosing.Text = "讀取表單";
-            this.btn_FileChoosing.UseVisualStyleBackColor = true;
+            this.btn_FileChoosing.UseVisualStyleBackColor = false;
             this.btn_FileChoosing.Click += new System.EventHandler(this.btn_FileChoosing_Click);
             // 
             // lbl_FilePath
             // 
-            this.lbl_FilePath.AutoSize = true;
             this.lbl_FilePath.BackColor = System.Drawing.Color.Transparent;
             this.lbl_FilePath.Font = new System.Drawing.Font("微軟正黑體", 10F);
-            this.lbl_FilePath.Location = new System.Drawing.Point(12, 144);
+            this.lbl_FilePath.Location = new System.Drawing.Point(91, 154);
             this.lbl_FilePath.Name = "lbl_FilePath";
-            this.lbl_FilePath.Size = new System.Drawing.Size(92, 18);
+            this.lbl_FilePath.Size = new System.Drawing.Size(510, 46);
             this.lbl_FilePath.TabIndex = 1;
             this.lbl_FilePath.Text = "選擇檔案路徑";
             // 
             // btn_PileCounting
             // 
-            this.btn_PileCounting.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.btn_PileCounting.Location = new System.Drawing.Point(12, 237);
+            this.btn_PileCounting.BackColor = System.Drawing.Color.Transparent;
+            this.btn_PileCounting.FlatAppearance.BorderSize = 0;
+            this.btn_PileCounting.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_PileCounting.Font = new System.Drawing.Font("微軟正黑體", 10F, System.Drawing.FontStyle.Bold);
+            this.btn_PileCounting.Image = ((System.Drawing.Image)(resources.GetObject("btn_PileCounting.Image")));
+            this.btn_PileCounting.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btn_PileCounting.Location = new System.Drawing.Point(12, 249);
             this.btn_PileCounting.Name = "btn_PileCounting";
-            this.btn_PileCounting.Size = new System.Drawing.Size(91, 37);
+            this.btn_PileCounting.Size = new System.Drawing.Size(140, 34);
             this.btn_PileCounting.TabIndex = 2;
-            this.btn_PileCounting.Text = "執行數量計算";
-            this.btn_PileCounting.UseVisualStyleBackColor = true;
+            this.btn_PileCounting.Text = "數量計算";
+            this.btn_PileCounting.UseVisualStyleBackColor = false;
             this.btn_PileCounting.Click += new System.EventHandler(this.btn_PileCounting_Click);
             // 
             // label1
@@ -84,20 +96,25 @@
             // 
             // btn_Close
             // 
-            this.btn_Close.Font = new System.Drawing.Font("Calibri", 9F);
-            this.btn_Close.Location = new System.Drawing.Point(12, 283);
+            this.btn_Close.BackColor = System.Drawing.Color.Transparent;
+            this.btn_Close.FlatAppearance.BorderSize = 0;
+            this.btn_Close.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_Close.Font = new System.Drawing.Font("微軟正黑體", 10F, System.Drawing.FontStyle.Bold);
+            this.btn_Close.Image = ((System.Drawing.Image)(resources.GetObject("btn_Close.Image")));
+            this.btn_Close.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btn_Close.Location = new System.Drawing.Point(12, 295);
             this.btn_Close.Name = "btn_Close";
-            this.btn_Close.Size = new System.Drawing.Size(91, 32);
+            this.btn_Close.Size = new System.Drawing.Size(140, 34);
             this.btn_Close.TabIndex = 3;
             this.btn_Close.Text = "結束";
-            this.btn_Close.UseVisualStyleBackColor = true;
+            this.btn_Close.UseVisualStyleBackColor = false;
             this.btn_Close.Click += new System.EventHandler(this.btn_Close_Click);
             // 
             // lbl_UserName
             // 
             this.lbl_UserName.AutoSize = true;
             this.lbl_UserName.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.lbl_UserName.Location = new System.Drawing.Point(70, 68);
+            this.lbl_UserName.Location = new System.Drawing.Point(90, 68);
             this.lbl_UserName.Name = "lbl_UserName";
             this.lbl_UserName.Size = new System.Drawing.Size(90, 21);
             this.lbl_UserName.TabIndex = 4;
@@ -109,20 +126,44 @@
             this.label2.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.label2.Location = new System.Drawing.Point(18, 68);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(58, 21);
+            this.label2.Size = new System.Drawing.Size(74, 21);
             this.label2.TabIndex = 5;
-            this.label2.Text = "姓名：";
+            this.label2.Text = "使用者：";
             // 
             // btn_StrutCal
             // 
-            this.btn_StrutCal.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Bold);
-            this.btn_StrutCal.Location = new System.Drawing.Point(13, 193);
+            this.btn_StrutCal.BackColor = System.Drawing.Color.Transparent;
+            this.btn_StrutCal.FlatAppearance.BorderSize = 0;
+            this.btn_StrutCal.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_StrutCal.Font = new System.Drawing.Font("微軟正黑體", 10F, System.Drawing.FontStyle.Bold);
+            this.btn_StrutCal.Image = ((System.Drawing.Image)(resources.GetObject("btn_StrutCal.Image")));
+            this.btn_StrutCal.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btn_StrutCal.Location = new System.Drawing.Point(13, 205);
             this.btn_StrutCal.Name = "btn_StrutCal";
-            this.btn_StrutCal.Size = new System.Drawing.Size(91, 37);
+            this.btn_StrutCal.Size = new System.Drawing.Size(140, 34);
             this.btn_StrutCal.TabIndex = 6;
             this.btn_StrutCal.Text = "支撐計算";
-            this.btn_StrutCal.UseVisualStyleBackColor = true;
+            this.btn_StrutCal.UseVisualStyleBackColor = false;
             this.btn_StrutCal.Click += new System.EventHandler(this.btn_StrutCal_Click);
+            // 
+            // pnl_choose
+            // 
+            this.pnl_choose.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(232)))), ((int)(((byte)(166)))));
+            this.pnl_choose.Location = new System.Drawing.Point(4, 117);
+            this.pnl_choose.Name = "pnl_choose";
+            this.pnl_choose.Size = new System.Drawing.Size(7, 34);
+            this.pnl_choose.TabIndex = 7;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.BackColor = System.Drawing.Color.Transparent;
+            this.label3.Font = new System.Drawing.Font("微軟正黑體", 10F);
+            this.label3.Location = new System.Drawing.Point(15, 154);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(78, 18);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "檔案路徑：";
             // 
             // Form1
             // 
@@ -130,12 +171,14 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(628, 352);
+            this.Controls.Add(this.pnl_choose);
             this.Controls.Add(this.btn_StrutCal);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.lbl_UserName);
             this.Controls.Add(this.btn_Close);
             this.Controls.Add(this.btn_PileCounting);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.lbl_FilePath);
             this.Controls.Add(this.btn_FileChoosing);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -157,6 +200,8 @@
         private System.Windows.Forms.Label lbl_UserName;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btn_StrutCal;
+        private System.Windows.Forms.Panel pnl_choose;
+        private System.Windows.Forms.Label label3;
     }
 }
 

@@ -18,12 +18,20 @@ namespace Pile_Counting
 
             
             this.Text = "樁基礎設計數量計算 " + Application.ProductVersion;
-            lbl_UserName.Text = $"{appGlobal.UserName}, {appGlobal.UserID}";
+            lbl_UserName.Text = $"{appGlobal.UserName}, {appGlobal.UserID} \n {appGlobal.UserEmail}";
+        }
+
+        private void MovePanel(Control c)
+        {
+            pnl_choose.Height = c.Height;
+            pnl_choose.Top = c.Top;
         }
 
         string filePath;
         private void btn_FileChoosing_Click(object sender, EventArgs e)
         {
+            MovePanel(btn_FileChoosing);
+
             OpenFileDialog openFile = new OpenFileDialog();
             openFile.ShowDialog();
                             
@@ -42,7 +50,7 @@ namespace Pile_Counting
 
         private void btn_PileCounting_Click(object sender, EventArgs e)
         {
-
+            MovePanel(btn_PileCounting);
             //filePath = @"E:\2019_DQ126\!Count\20200224_P16.xlsx"; //暫時用，最後請刪除                       
 
             GeneralProcess("Counting");
@@ -50,11 +58,13 @@ namespace Pile_Counting
 
         private void btn_Close_Click(object sender, EventArgs e)
         {
+            MovePanel(btn_Close);
             this.Close();
         }
 
         private void btn_StrutCal_Click(object sender, EventArgs e)
         {
+            MovePanel(btn_StrutCal);
             GeneralProcess("Strut");
         }
 
@@ -63,9 +73,11 @@ namespace Pile_Counting
             if (filePath == null) { MessageBox.Show("請選擇檔案路徑", "Error"); return; }
 
             PileCounting pileCounting = new PileCounting(filePath);
-            string done = pileCounting.Process(function);
+            pileCounting.Process(function);
+            appGlobal.pileData.Clear();
+            appGlobal.strutData.Clear();
 
-            MessageBox.Show(done, "Pile Founction");
+            MessageBox.Show(appGlobal.state, "Pile Founction");
         }
     }
 }

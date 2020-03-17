@@ -38,16 +38,16 @@
             // dtGrid_Strut
             // 
             this.dtGrid_Strut.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dtGrid_Strut.Location = new System.Drawing.Point(12, 12);
+            this.dtGrid_Strut.Location = new System.Drawing.Point(3, 12);
             this.dtGrid_Strut.Name = "dtGrid_Strut";
             this.dtGrid_Strut.RowTemplate.Height = 24;
-            this.dtGrid_Strut.Size = new System.Drawing.Size(1112, 450);
+            this.dtGrid_Strut.Size = new System.Drawing.Size(1214, 450);
             this.dtGrid_Strut.TabIndex = 0;
             // 
             // btn_AutoStrut
             // 
             this.btn_AutoStrut.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Bold);
-            this.btn_AutoStrut.Location = new System.Drawing.Point(831, 480);
+            this.btn_AutoStrut.Location = new System.Drawing.Point(930, 480);
             this.btn_AutoStrut.Name = "btn_AutoStrut";
             this.btn_AutoStrut.Size = new System.Drawing.Size(130, 41);
             this.btn_AutoStrut.TabIndex = 1;
@@ -59,7 +59,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Bold);
-            this.label1.Location = new System.Drawing.Point(827, 524);
+            this.label1.Location = new System.Drawing.Point(926, 524);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(150, 21);
             this.label1.TabIndex = 2;
@@ -68,7 +68,7 @@
             // btn_Close
             // 
             this.btn_Close.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Bold);
-            this.btn_Close.Location = new System.Drawing.Point(1001, 480);
+            this.btn_Close.Location = new System.Drawing.Point(1100, 480);
             this.btn_Close.Name = "btn_Close";
             this.btn_Close.Size = new System.Drawing.Size(113, 41);
             this.btn_Close.TabIndex = 3;
@@ -80,13 +80,15 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1136, 554);
+            this.ClientSize = new System.Drawing.Size(1223, 560);
             this.Controls.Add(this.btn_Close);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btn_AutoStrut);
             this.Controls.Add(this.dtGrid_Strut);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "fStrutDesign";
             this.Text = "StrutDesign";
+            this.Load += new System.EventHandler(this.fStrutDesign_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dtGrid_Strut)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
