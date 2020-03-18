@@ -20,7 +20,7 @@ namespace Pile_Counting
 
         private void fStrutDesign_Load(object sender, EventArgs e)
         {
-            appGlobal.state = "未選擇斜撐，支撐計算與寫入Excel尚未完成";
+            appGlobal.state = "尚有未選擇斜撐或未確認，支撐計算與寫入Excel並未完成";
 
             DataGridViewColumn col;
 
@@ -131,25 +131,30 @@ namespace Pile_Counting
         }
 
         private void btn_Close_Click(object sender, EventArgs e)
+        {
+            appGlobal.IsWriteStrut = false;            
+            this.Close();
+        }
+
+        private void btn_ConfirmClose_Click(object sender, EventArgs e)
         {            
-            for(int i = 0; i < appGlobal.strutData.Count; i++)
+            for (int i = 0; i < appGlobal.strutData.Count; i++)
             {
                 try
                 {
                     string designStrut = dtGrid_Strut.Rows[i].Cells["DesignStrut"].Value.ToString();
-                    appGlobal.strutData[i].designStrut = designStrut;                    
+                    appGlobal.strutData[i].designStrut = designStrut;
                 }
                 catch
-                {                    
-                    break; //未選擇斜撐
+                {
+                    MessageBox.Show(appGlobal.state, "Error");
+                    return;                    
                 }
-
-                if (i == appGlobal.strutData.Count - 1) appGlobal.state = "支撐計算與寫入Excel完成";
+                                
             }
-            
+            appGlobal.IsWriteStrut = true;
             this.Close();
+            
         }
-
-        
     }
 }

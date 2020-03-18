@@ -32,6 +32,7 @@
             this.btn_AutoStrut = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.btn_Close = new System.Windows.Forms.Button();
+            this.btn_ConfirmClose = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dtGrid_Strut)).BeginInit();
             this.SuspendLayout();
             // 
@@ -68,7 +69,7 @@
             // btn_Close
             // 
             this.btn_Close.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Bold);
-            this.btn_Close.Location = new System.Drawing.Point(1100, 480);
+            this.btn_Close.Location = new System.Drawing.Point(1098, 514);
             this.btn_Close.Name = "btn_Close";
             this.btn_Close.Size = new System.Drawing.Size(113, 41);
             this.btn_Close.TabIndex = 3;
@@ -76,11 +77,23 @@
             this.btn_Close.UseVisualStyleBackColor = true;
             this.btn_Close.Click += new System.EventHandler(this.btn_Close_Click);
             // 
+            // btn_ConfirmClose
+            // 
+            this.btn_ConfirmClose.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Bold);
+            this.btn_ConfirmClose.Location = new System.Drawing.Point(1098, 468);
+            this.btn_ConfirmClose.Name = "btn_ConfirmClose";
+            this.btn_ConfirmClose.Size = new System.Drawing.Size(113, 41);
+            this.btn_ConfirmClose.TabIndex = 4;
+            this.btn_ConfirmClose.Text = "確認並結束";
+            this.btn_ConfirmClose.UseVisualStyleBackColor = true;
+            this.btn_ConfirmClose.Click += new System.EventHandler(this.btn_ConfirmClose_Click);
+            // 
             // fStrutDesign
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1223, 560);
+            this.Controls.Add(this.btn_ConfirmClose);
             this.Controls.Add(this.btn_Close);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btn_AutoStrut);
@@ -101,5 +114,6 @@
         private System.Windows.Forms.Button btn_AutoStrut;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btn_Close;
+        private System.Windows.Forms.Button btn_ConfirmClose;
     }
 }

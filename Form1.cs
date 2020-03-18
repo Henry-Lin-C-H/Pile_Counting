@@ -79,5 +79,6 @@ namespace Pile_Counting
 
             MessageBox.Show(appGlobal.state, "Pile Founction");
         }
+
     }
 }

@@ -110,6 +110,57 @@ namespace Pile_Counting
             }
             catch { appGlobal.state = "讀取失敗，請確認檔案資料是否有誤"; return; }
             PileData = appGlobal.pileData;
+
+            appGlobal.IsWriteStrut = true;
+            switch (function.ToUpper()) //讀取斜撐資料
+            {
+                case ("COUNTING"):
+                    try
+                    {
+                        for (int i = 0; i < PileData.Count; i++)
+                        {
+                            string ID = PileData[i].ID;
+                            string strBracing2m = strutWS.GetRow(i + 1).GetCell(10).ToString();
+                            string strStrut2m = strutWS.GetRow(i + 1).GetCell(11).ToString();
+                            double total2m = double.Parse(strutWS.GetRow(i + 1).GetCell(12).ToString());
+
+                            string strBracing2p5m = strutWS.GetRow(i + 1).GetCell(13).ToString();
+                            string strStrut2p5m = strutWS.GetRow(i + 1).GetCell(14).ToString();
+                            double total2p5m = double.Parse(strutWS.GetRow(i + 1).GetCell(15).ToString());
+
+                            int stage = int.Parse(strutWS.GetRow(i + 1).GetCell(16).ToString());
+                            string designStrut = strutWS.GetRow(i + 1).GetCell(17).ToString();
+
+                            if (designStrut == "") //無選擇斜撐
+                            {
+                                appGlobal.IsWriteStrut = false;
+                                break;
+                            }
+
+                            appGlobal.strutData.Add(new strutData()
+                            {
+                                ID = ID,
+                                strBracing2m = strBracing2m,
+                                strStrut2m = strStrut2m,
+                                total2m = total2m,
+
+                                strBracing2p5m = strBracing2p5m,
+                                strStrut2p5m = strStrut2p5m,
+                                total2p5m = total2p5m,
+
+                                stage = stage,
+                                designStrut = designStrut
+                            });
+                        }
+                    }
+                    catch
+                    {
+                        appGlobal.IsWriteStrut = false; //無點選斜撐計算
+                    }
+                    
+                    
+                    break;
+            }
             #endregion
 
             //string done = "";
@@ -134,21 +185,22 @@ namespace Pile_Counting
 
                     ExcaVolumeCount(ref ExcaVolume); //構造物開挖體積計算
 
-                    WriteToSheet(writeWS); //寫入數量計算書                    
+                    WriteToSheet(writeWS); //寫入數量計算書                  
 
-                    appGlobal.state = "數量計算寫入完成";
+                    if (appGlobal.IsWriteStrut) { appGlobal.state = "數量計算寫入完成"; }
+                    else { appGlobal.state = "斜撐資料有誤，數量計算將不會計算\n9.斜撐、直撐、橫擋\n10.中間柱"; }
+                    
                     //done = "數量計算寫入完成";
                     break;
 
                 case ("STRUT"):
 
-                    strutCal();
+                    strutCal(strutWS);
                     
                     fStrutDesign f = new fStrutDesign();
                     f.ShowDialog();
 
-                    ExcelStrut(strutWS, lastRow);
-
+                    if (appGlobal.IsWriteStrut) { ExcelStrut(strutWS, lastRow); }                    
                     
                     //done = "支撐計算與寫入完成";
                     break;
@@ -561,9 +613,67 @@ namespace Pile_Counting
 
             List<string> strut = new List<string>();
             SetRowData(writeWS, row, ""); row++;
-            strut.Add($"7,斜撐、直撐,T,,,H350型鋼－斜撐長度*單層支數*階數*墩數+直撐");
-            strut.Add($",橫擋,T,,,H350型鋼－樁帽周長*階數*墩數");
-            strut.Add($"8,中間柱,T");
+            string strbracing = "";
+            double bracingTotal = 0;
+            List<strutData> strutData = appGlobal.strutData;
+            string strWales = ""; //圍令
+            double walesTotal = 0;
+            string strKingPost = ""; //中間柱
+            double kingPostTotal = 0;
+            if (appGlobal.IsWriteStrut)
+            {
+                strbracing += "0.1365*(";
+                strWales += "0.1365*(";
+                strKingPost += "0.1365*(";
+                bool king1st = true;
+                for(int i = 0; i < PileData.Count; i++)
+                {
+                    double Df = PileData[i].Df;
+                    if(strutData[i].designStrut == "2")
+                    {
+                        strbracing += $"({strutData[i].strBracing2m})*{strutData[i].stage}";
+                        if(strutData[i].strStrut2m != "")
+                        {
+                            strbracing += $"+{strutData[i].strStrut2m}*{strutData[i].stage}";
+                            if (!king1st) { strKingPost += "+"; }
+                            else { king1st = false; }
+                            strKingPost += $"{Df+2.5}";
+                            kingPostTotal += Df + 2.5;
+                            
+                        }
+                        bracingTotal += strutData[i].total2m;
+                    }
+                    else if(strutData[i].designStrut == "2.5")
+                    {
+                        strbracing += $"({strutData[i].strBracing2p5m})*{strutData[i].stage}";
+                        if (strutData[i].strStrut2p5m != "")
+                        {
+                            strbracing += $"+{strutData[i].strStrut2p5m}*{strutData[i].stage}";
+                            if (!king1st) strKingPost += "+";
+                            else { king1st = false; }
+                            strKingPost += $"{Df + 2.5}";
+                            kingPostTotal += Df + 2.5;
+                        }
+                        bracingTotal += strutData[i].total2p5m;
+                    }
+
+                    double L = PileData[i].Length;
+                    double W = PileData[i].Width;
+                    strWales += $"({L}+{W})*2*{strutData[i].stage}";
+                    walesTotal += (L + W) * 2 * strutData[i].stage;
+
+                    if(i != PileData.Count - 1) { strbracing += "+"; strWales += "+"; }
+                }
+                bracingTotal *= 0.1365;
+                walesTotal *= 0.1365;
+                kingPostTotal *= 0.1365;
+                strbracing += ")";
+                strWales += ")";
+                strKingPost += ")";
+            }
+            strut.Add($"7,斜撐、直撐,T,{Math.Round(bracingTotal,0)},{strbracing},H350型鋼－斜撐長度*單層支數*階數*墩數+直撐");
+            strut.Add($",橫擋,T,{Math.Round(walesTotal,0)},{strWales},H350型鋼－樁帽周長*階數*墩數");
+            strut.Add($"8,中間柱,T,{Math.Round(kingPostTotal,0)},{strKingPost},,有直撐之墩，其Df+2.5m");
             for(int i = 0; i < strut.Count; i++) { SetRowData(writeWS, row, strut[i]); row++; }
 
             List<string> excelExcaV = new List<string>();
@@ -624,12 +734,14 @@ namespace Pile_Counting
         }        
         #endregion
 
-        #region 支撐計算
-        void strutCal()
+        #region 斜撐計算
+        void strutCal(ISheet strutWs)
         {
             //appGlobal.strutData.Clear(); //在form1統一在程式完成後清除
             for (int i = 0; i < PileData.Count; i++)
             {
+                for(int j = 10; j < 18 + 1; j++) { SetValue(strutWs, i + 1, j, ""); } //先確認斜撐計算的項目為空的
+
                 string ID = PileData[i].ID;
                 double L = PileData[i].Length;
                 double W = PileData[i].Width;
@@ -741,7 +853,7 @@ namespace Pile_Counting
 
                 setData.Add(strutData[i].stage.ToString());
                 setData.Add(appGlobal.strutData[i].designStrut);
-
+                                
                 //strInput += $"{strutData[i].strBracing2m},{strutData[i].strStrut2m},{strutData[i].total2m}," +
                 //    $"{strutData[i].strBracing2p5m},{strutData[i].strStrut2p5m},{strutData[i].total2p5m}," +
                 //    $"{strutData[i].stage}";
@@ -755,10 +867,13 @@ namespace Pile_Counting
                 }
                 
                 
-            }           
+            }
+            appGlobal.state = "支撐計算與寫入Excel完成";
 
         }
         #endregion
+
+ 
 
         #region Excel寫入
         /// <summary>
