@@ -21,6 +21,7 @@ namespace Pile_Counting
         private void fStrutDesign_Load(object sender, EventArgs e)
         {
             appGlobal.state = "尚有未選擇斜撐或未確認，支撐計算與寫入Excel並未完成";
+            appGlobal.IsWriteStrut = false;
 
             DataGridViewColumn col;
 
@@ -131,8 +132,7 @@ namespace Pile_Counting
         }
 
         private void btn_Close_Click(object sender, EventArgs e)
-        {
-            appGlobal.IsWriteStrut = false;            
+        {        
             this.Close();
         }
 

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(fStrutDesign));
             this.dtGrid_Strut = new System.Windows.Forms.DataGridView();
             this.btn_AutoStrut = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -47,20 +48,25 @@
             // 
             // btn_AutoStrut
             // 
+            this.btn_AutoStrut.BackColor = System.Drawing.Color.Transparent;
+            this.btn_AutoStrut.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_AutoStrut.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Bold);
-            this.btn_AutoStrut.Location = new System.Drawing.Point(930, 480);
+            this.btn_AutoStrut.Image = ((System.Drawing.Image)(resources.GetObject("btn_AutoStrut.Image")));
+            this.btn_AutoStrut.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btn_AutoStrut.Location = new System.Drawing.Point(916, 480);
             this.btn_AutoStrut.Name = "btn_AutoStrut";
-            this.btn_AutoStrut.Size = new System.Drawing.Size(130, 41);
+            this.btn_AutoStrut.Size = new System.Drawing.Size(144, 41);
             this.btn_AutoStrut.TabIndex = 1;
             this.btn_AutoStrut.Text = "自動選擇支撐";
-            this.btn_AutoStrut.UseVisualStyleBackColor = true;
+            this.btn_AutoStrut.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btn_AutoStrut.UseVisualStyleBackColor = false;
             this.btn_AutoStrut.Click += new System.EventHandler(this.btn_AutoStrut_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Bold);
-            this.label1.Location = new System.Drawing.Point(926, 524);
+            this.label1.Location = new System.Drawing.Point(913, 524);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(150, 21);
             this.label1.TabIndex = 2;
@@ -68,10 +74,13 @@
             // 
             // btn_Close
             // 
+            this.btn_Close.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_Close.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Bold);
-            this.btn_Close.Location = new System.Drawing.Point(1098, 514);
+            this.btn_Close.Image = ((System.Drawing.Image)(resources.GetObject("btn_Close.Image")));
+            this.btn_Close.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btn_Close.Location = new System.Drawing.Point(1084, 515);
             this.btn_Close.Name = "btn_Close";
-            this.btn_Close.Size = new System.Drawing.Size(113, 41);
+            this.btn_Close.Size = new System.Drawing.Size(127, 41);
             this.btn_Close.TabIndex = 3;
             this.btn_Close.Text = "結束";
             this.btn_Close.UseVisualStyleBackColor = true;
@@ -79,13 +88,18 @@
             // 
             // btn_ConfirmClose
             // 
+            this.btn_ConfirmClose.BackColor = System.Drawing.Color.Transparent;
+            this.btn_ConfirmClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_ConfirmClose.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Bold);
-            this.btn_ConfirmClose.Location = new System.Drawing.Point(1098, 468);
+            this.btn_ConfirmClose.Image = ((System.Drawing.Image)(resources.GetObject("btn_ConfirmClose.Image")));
+            this.btn_ConfirmClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btn_ConfirmClose.Location = new System.Drawing.Point(1084, 468);
             this.btn_ConfirmClose.Name = "btn_ConfirmClose";
-            this.btn_ConfirmClose.Size = new System.Drawing.Size(113, 41);
+            this.btn_ConfirmClose.Size = new System.Drawing.Size(127, 41);
             this.btn_ConfirmClose.TabIndex = 4;
             this.btn_ConfirmClose.Text = "確認並結束";
-            this.btn_ConfirmClose.UseVisualStyleBackColor = true;
+            this.btn_ConfirmClose.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btn_ConfirmClose.UseVisualStyleBackColor = false;
             this.btn_ConfirmClose.Click += new System.EventHandler(this.btn_ConfirmClose_Click);
             // 
             // fStrutDesign
