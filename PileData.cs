@@ -55,6 +55,11 @@ namespace Pile_Counting
         public double Volume;
         public string strHead;
         public double Head;
+        public string strTestPVC; //完整性試驗PVC管
+        public double testPVC;
+        public double pvcDia;
+        public string strBackFill; //基樁空打回填
+        public double backFill;
     }
 
     class sheetPile

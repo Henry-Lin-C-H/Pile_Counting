@@ -287,7 +287,12 @@ namespace Pile_Counting
                 double volume = 0;
                 string strHead = "";
                 double head = 0;
+                string strTestPVC = "";
+                double testPVC = 0;
+                string strBackFill = "";
+                double backFill = 0;
 
+                double dia = double.Parse(item);
                 for (int i = 0; i < each.Count; i++)
                 {
                     eachID.Add(each[i].ID);
@@ -304,9 +309,7 @@ namespace Pile_Counting
 
                     drillL += each[i].pileNo * (L + each[i].Df); //計算鑽掘長度
                     strDrillL += $"{each[i].pileNo}*({L}+{each[i].Df})";
-                    if (i != each.Count - 1) strDrillL += "+";
-
-                    double dia = double.Parse(item);
+                    if (i != each.Count - 1) strDrillL += "+";                    
 
                     volume += each[i].pileNo * (L + 1); //計算體積(混凝土)
                     strVolume += $"{each[i].pileNo}*({L}+1)";
@@ -323,12 +326,23 @@ namespace Pile_Counting
                     if (i == each.Count - 1)
                     {
                         head *= (1 * dia * dia * Math.PI / 4);
-                        string temp = $"1*{dia}*{dia}*pi()*";
+                        string temp = $"1*{dia}*{dia}*pi()/4*";
                         strHead = temp + "(" + strHead + ")";
                     }
-                    else strHead += "+";
+                    else strHead += "+";                                        
                 }
                 int no = each.Count;
+
+                int pvcDia = 0;
+                if (item == "1.5") pvcDia = 4;
+                else if (item == "2") pvcDia = 6;
+                else pvcDia = 4;
+
+                testPVC = drillL * pvcDia + pileNo * pvcDia * 0.2; //計算完整性試驗PVC管
+                strTestPVC = $"{drillL}*{pvcDia}+{pileNo}*{pvcDia}*0.2";
+
+                backFill = (drillL - pileL - pileNo) * dia * dia * Math.PI * 0.25; //劣質混凝土直接取基樁支數，因為長度為1m
+                strBackFill = $"({drillL}-{pileL}-{pileNo})*{dia}*{dia}*pi()/4";
 
                 outDiaPile.Add(new outDiaPile()
                 {
@@ -345,7 +359,12 @@ namespace Pile_Counting
                     Volume = volume,
                     strVolume = strVolume,
                     Head = head,
-                    strHead = strHead
+                    strHead = strHead,
+                    testPVC = testPVC,
+                    pvcDia = pvcDia,
+                    strTestPVC = strTestPVC,
+                    backFill = backFill,
+                    strBackFill = strBackFill,
                 });
             }
         }
@@ -356,10 +375,11 @@ namespace Pile_Counting
         {
             sheetPile.Add(new sheetPile() { name = "6m鋼板樁", ID = new List<string>() });
             sheetPile.Add(new sheetPile() { name = "9m鋼板樁", ID = new List<string>() });
+            sheetPile.Add(new sheetPile() { name = "13m鋼板樁", ID = new List<string>() });
             sheetPile.Add(new sheetPile() { name = "16m鋼板樁", ID = new List<string>() });
             sheetPile.Add(new sheetPile() { name = "自行設計", ID = new List<string>() });
 
-            List<bool> addCheck = new List<bool> { false, false, false, false };
+            List<bool> addCheck = new List<bool> { false, false, false, false, false };
             //List<PileData> orderSheet = PileData.OrderBy(x => x.Df).ToList();
             for (int i = 0; i < PileData.Count; i++)
             {
@@ -371,15 +391,15 @@ namespace Pile_Counting
 
                 bool addPlus;
 
-                int check = 3;
+                int check = 4;
                 if (Df <= 3) { check = 0; sheetPile[check].ID.Add(PileData[i].ID);
                     addPlus = addCheck[0]; addCheck[0] = true; }
                 else if (Df > 3 && Df <= 5.5) { check = 1; sheetPile[check].ID.Add(PileData[i].ID);
                     addPlus = addCheck[1]; addCheck[1] = true; }
                 else if (Df > 5.5 && Df <= 9) { check = 2; sheetPile[check].ID.Add(PileData[i].ID);
                     addPlus = addCheck[2]; addCheck[2] = true; }
-                else { check = 3; sheetPile[check].ID.Add(PileData[i].ID);
-                    addPlus = addCheck[3]; addCheck[3] = true; }
+                else { check = 4; sheetPile[check].ID.Add(PileData[i].ID);
+                    addPlus = addCheck[4]; addCheck[4] = true; }
 
                 if (addPlus) sheetPile[check].strMarchL += "+";
 
@@ -558,6 +578,9 @@ namespace Pile_Counting
             for (int i = 0; i < PCCon.Count; i++) { SetRowData(writeWS, row, PCCon[i]); row++; }
             SetRowData(writeWS, row, ""); row++;
             SetRowData(writeWS, row, "3,鋼筋SD420W,T"); row++;
+            SetRowData(writeWS, row, ",樁帽鋼筋,T,,,各墩總和"); row++;
+            SetRowData(writeWS, row, ",搭接筋,T,"); row++;
+            SetRowData(writeWS, row, ",工作筋,T,,,樁帽混凝土*5.2kg/m3"); row++;
             SetRowData(writeWS, row, ""); row++;
             for (int i = 0; i < mold.Count; i++) { SetRowData(writeWS, row, mold[i]); row++; }
                         
@@ -575,8 +598,11 @@ namespace Pile_Counting
                 string strV = outDiaPile[i].strVolume;
                 double head = Math.Round(outDiaPile[i].Head, 0);
                 string strHead = outDiaPile[i].strHead;
-
-                double PVC = Math.Round(drillL * 4 + no * 4 * 0.2, 0);
+                double testPVC = Math.Round(outDiaPile[i].testPVC, 0);
+                double pvcDia = outDiaPile[i].pvcDia;
+                string strTestPVC = outDiaPile[i].strTestPVC;
+                double backfill = Math.Round(outDiaPile[i].backFill, 0);
+                string strBackFill = outDiaPile[i].strBackFill;
 
                 string ID = "";
                 for (int j = 0; j < outDiaPile[i].ID.Count; j++) { ID += $"{outDiaPile[i].ID[j]}、"; }
@@ -587,7 +613,8 @@ namespace Pile_Counting
                 pileSheet.Add($"(3),f'c=280kg/cm2 TYPE II 混凝土,m3,{V},{strV}");
                 pileSheet.Add($"(4),鋼筋SD420W,T,,,樁徑{dia}m全套管樁(樁基礎_---鋼筋，SD420W(含搭接，不含耗損)");
                 pileSheet.Add($"(5),基樁樁頭敲除,m3,{head},{strHead},每支樁敲除體積(1m)*Σ(各墩樁數*墩數)");
-                pileSheet.Add($"(6),完整性試驗PVC館,m,{PVC},,,鑽掘長度*4+基樁支數*4*0.2");
+                pileSheet.Add($"(6),完整性試驗PVC管,m,{testPVC},{strTestPVC},鑽掘長度*{pvcDia}+基樁支數*{pvcDia}*0.2");
+                pileSheet.Add($"(7),空打回填,m3,{backfill},{strBackFill},(鑽掘長度-總樁長-劣質混凝土)*基樁面積");
                 SetRowData(writeWS, row, ""); row++;
                 for (int j = 0; j < pileSheet.Count; j++) { SetRowData(writeWS, row, pileSheet[j]); row++; }
             }
